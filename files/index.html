@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bolo e Dindin do Reino</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="header-inner">
+    <a class="logo" href="#" onclick="showPage('home')">
+      <div class="logo-text">
+        Bolo e Dindin do Reino
+        <span>Projeto Igreja do Reino</span>
+      </div>
+    </a>
+    <nav>
+      <a href="#" onclick="showPage('home')" class="active" id="nav-home">Inicio</a>
+      <a href="#" onclick="showPage('products')" id="nav-products">Produtos</a>
+      <a href="#" onclick="showPage('about')" id="nav-about">Sobre</a>
+      <button class="cart-btn" onclick="showPage('cart')">
+        Carrinho
+        <span class="cart-badge" id="cart-count">0</span>
+      </button>
+      <a href="admin.html" id="nav-admin" style="font-size:0.8rem;opacity:0.65">Admin</a>
+    </nav>
+  </div>
+</header>
+
+<!-- PAGE: HOME -->
+<div class="page active" id="page-home">
+  <section class="hero">
+    <h1>Feito com <em>amor</em> e proposito</h1>
+    <p>Aqui voce encontra sabor, acolhimento e proposito em tudo que fazemos. Cada pedido e uma contribuicao para um projeto maior — nossa familia do Reino.</p>
+    <div class="hero-info">
+      <div class="hero-info-item">Samambaia Norte – 415, Conj. 3, Lote 26</div>
+      <div class="hero-info-item">Domingo: 19h00</div>
+      <div class="hero-info-item">Quinta: 19h30</div>
+    </div>
+    <button class="btn-hero" onclick="showPage('products')">Ver Produtos Disponiveis</button>
+  </section>
+
+  <div class="section-header">
+    <h2>Destaques <span>do Dia</span></h2>
+    <p>Confira o que esta disponivel agora mesmo</p>
+    <div class="section-divider"></div>
+  </div>
+  <div class="products-grid" id="featured-grid" style="padding-bottom:40px"></div>
+
+  <div style="text-align:center;padding-bottom:60px">
+    <button class="btn-hero" onclick="showPage('products')" style="font-size:0.95rem;padding:13px 32px">Ver Todos os Produtos</button>
+  </div>
+</div>
+
+<!-- PAGE: PRODUCTS -->
+<div class="page" id="page-products">
+  <div class="section-header">
+    <h2>Nossos <span>Produtos</span></h2>
+    <p>Escolha o que deseja e reserve o seu pedido</p>
+    <div class="section-divider"></div>
+  </div>
+  <div class="category-tabs" id="category-tabs">
+    <button class="cat-tab active" onclick="filterCategory('all', this)">Todos</button>
+  </div>
+  <div class="products-grid" id="products-grid"></div>
+</div>
+
+<!-- PAGE: CART / CHECKOUT -->
+<div class="page" id="page-cart">
+  <div class="section-header">
+    <h2>Seu <span>Carrinho</span></h2>
+    <p>Revise seus itens e finalize o pedido</p>
+    <div class="section-divider"></div>
+  </div>
+  <div class="checkout-wrap">
+    <div id="cart-content"></div>
+  </div>
+</div>
+
+<!-- PAGE: ABOUT -->
+<div class="page" id="page-about">
+  <div class="section-header">
+    <h2>Sobre o <span>Projeto</span></h2>
+    <div class="section-divider"></div>
+  </div>
+  <div class="about-section">
+    <div class="about-card">
+      <h2>Projeto Igreja do Reino</h2>
+      <p>Somos mais que uma igreja — somos uma familia unida por um proposito maior. Com fe, dedicacao e muito amor, estamos desenvolvendo um projeto especial que representa crescimento, uniao e um futuro cheio de conquistas.</p>
+      <p>Cada detalhe e feito com carinho, cada passo e dado com esperanca, e cada contribuicao carrega um significado enorme: estamos construindo algo que vai alem do presente — algo que impacta vidas.</p>
+      <p>Aqui, voce encontra sabor, acolhimento e proposito em tudo o que fazemos.</p>
+      <div class="about-info">
+        <div class="about-info-item">Samambaia Norte – 415, Conjunto 3, Lote 26</div>
+        <div class="about-info-item">Domingo: 19h00</div>
+        <div class="about-info-item">Quinta-feira: 19h30</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: TERMS -->
+<div class="modal-overlay" id="modal-terms">
+  <div class="modal">
+    <h3>Termos de Uso</h3>
+    <p>
+      Ao utilizar este site, voce confirma que:<br><br>
+      - Os pedidos sao para consumo pessoal<br>
+      - Os valores exibidos estao sujeitos a disponibilidade de estoque<br>
+      - O cancelamento deve ser feito com antecedencia minima de 24h<br>
+      - O pagamento via PIX e antecipado; na entrega, e na hora<br><br>
+      <strong>Duvidas? Nos procure apos os cultos!</strong>
+    </p>
+    <div class="modal-actions">
+      <button class="btn-outline" onclick="closeModal('modal-terms')">Recusar</button>
+      <button class="btn-primary" onclick="acceptTerms()">Aceito os Termos</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: ADD TO CART CONFIRM -->
+<div class="modal-overlay" id="modal-add">
+  <div class="modal">
+    <h3 id="modal-add-title">Adicionar ao carrinho?</h3>
+    <p id="modal-add-body"></p>
+    <div class="modal-actions">
+      <button class="btn-outline" onclick="closeModal('modal-add')">Cancelar</button>
+      <button class="btn-primary" onclick="confirmAddToCart()">Adicionar</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- FOOTER -->
+<footer>
+  <strong>Bolo e Dindin do Reino</strong><br>
+  Projeto Igreja do Reino — Samambaia Norte, 415, Conj. 3, Lote 26<br>
+  Domingo 19h00 · Quinta-feira 19h30<br>
+  <span style="opacity:0.6;font-size:0.78rem;margin-top:6px;display:block">Feito com amor e proposito</span>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>

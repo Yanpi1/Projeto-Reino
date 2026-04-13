@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Painel Admin — Bolo e Dindin do Reino</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<!-- LOGIN PAGE -->
+<div id="page-login" class="page active">
+  <div class="admin-login-wrap">
+    <div class="admin-login-card">
+      <span class="icon">&#128274;</span>
+      <h2>Painel Admin</h2>
+      <p>Acesso restrito aos administradores do projeto</p>
+      <div class="login-error" id="login-error">Senha incorreta. Tente novamente.</div>
+      <div class="form-group" style="margin-bottom:14px">
+        <label>Senha de Acesso</label>
+        <input type="password" id="admin-password" placeholder="••••••••" onkeydown="if(event.key==='Enter')adminLogin()" />
+      </div>
+      <button class="btn-login" onclick="adminLogin()">Entrar no Painel</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADMIN PANEL -->
+<div id="admin-panel" style="display:none">
+  <div class="admin-topbar">
+    <h2>Painel Administrativo — Bolo e Dindin do Reino</h2>
+    <div style="display:flex;gap:10px;align-items:center">
+      <a href="index.html" class="btn-logout" style="text-decoration:none">Ver Site</a>
+      <button class="btn-logout" onclick="adminLogout()">Sair</button>
+    </div>
+  </div>
+  <div class="admin-tabs">
+    <button class="admin-tab active" onclick="showAdminTab('dashboard', this)">Dashboard</button>
+    <button class="admin-tab" onclick="showAdminTab('products-admin', this)">Produtos</button>
+    <button class="admin-tab" onclick="showAdminTab('orders-admin', this)">Pedidos</button>
+    <button class="admin-tab" onclick="showAdminTab('pix-config', this)">Configurar PIX</button>
+  </div>
+
+  <div class="admin-content">
+
+    <!-- DASHBOARD -->
+    <div class="admin-tab-content active" id="tab-dashboard">
+      <div class="stats-grid" id="stats-grid"></div>
+      <div id="recent-orders-admin"></div>
+    </div>
+
+    <!-- PRODUCTS ADMIN -->
+    <div class="admin-tab-content" id="tab-products-admin">
+      <div class="admin-form-card">
+        <h3 id="product-form-title">Adicionar Novo Produto</h3>
+        <input type="hidden" id="edit-product-id" />
+        <div class="form-row cols-2">
+          <div class="form-group">
+            <label>Nome do Produto *</label>
+            <input type="text" id="p-name" placeholder="Ex: Bolo de Chocolate" />
+          </div>
+          <div class="form-group">
+            <label>Categoria *</label>
+            <input type="text" id="p-category" placeholder="Ex: Bolos, Docinhos, Dindin..." />
+          </div>
+        </div>
+        <div class="form-row cols-2">
+          <div class="form-group">
+            <label>Preco (R$) *</label>
+            <input type="number" id="p-price" placeholder="0,00" step="0.01" min="0" />
+          </div>
+          <div class="form-group">
+            <label>Estoque (unidades) *</label>
+            <input type="number" id="p-stock" placeholder="0" min="0" />
+          </div>
+        </div>
+        <div class="form-row cols-1">
+          <div class="form-group">
+            <label>Descricao / Cardapio</label>
+            <textarea id="p-desc" placeholder="Descreva o produto, ingredientes, tamanho, etc..." rows="3" style="resize:vertical"></textarea>
+          </div>
+        </div>
+        <div class="form-row cols-1">
+          <div class="form-group">
+            <label>Foto do Produto</label>
+            <div class="img-upload-area" id="upload-area">
+              <input type="file" id="p-img" accept="image/*" onchange="previewImg(this)" />
+              <div id="upload-placeholder">
+                <div style="font-size:2rem;margin-bottom:8px">[ foto ]</div>
+                <div style="font-weight:700;color:var(--primary-dark)">Clique para selecionar uma foto</div>
+                <div style="font-size:0.8rem;color:var(--text-muted);margin-top:4px">JPG, PNG, WEBP (max. 5MB)</div>
+              </div>
+              <img id="img-preview" class="img-preview" alt="preview" />
+            </div>
+          </div>
+        </div>
+        <div style="margin-top:4px">
+          <button class="btn-save" onclick="saveProduct()">Salvar Produto</button>
+          <button class="btn-cancel-edit" id="btn-cancel-edit" onclick="cancelEdit()">Cancelar Edicao</button>
+        </div>
+      </div>
+
+      <div class="admin-form-card">
+        <h3>Produtos Cadastrados</h3>
+        <div id="admin-products-list">
+          <p style="color:var(--text-muted);font-size:0.9rem">Nenhum produto ainda. Adicione acima!</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ORDERS ADMIN -->
+    <div class="admin-tab-content" id="tab-orders-admin">
+      <div class="admin-form-card">
+        <h3>Todos os Pedidos</h3>
+        <div id="admin-orders-list">
+          <p style="color:var(--text-muted);font-size:0.9rem">Nenhum pedido ainda.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- PIX CONFIG -->
+    <div class="admin-tab-content" id="tab-pix-config">
+      <div class="admin-form-card">
+        <h3>Configurar Chave PIX</h3>
+        <p style="color:var(--text-muted);font-size:0.9rem;margin-bottom:20px">Esta chave sera exibida para os clientes no checkout ao escolherem pagar via PIX.</p>
+        <div class="form-row cols-1">
+          <div class="form-group">
+            <label>Tipo da Chave PIX</label>
+            <select id="pix-type">
+              <option value="CPF">CPF</option>
+              <option value="CNPJ">CNPJ</option>
+              <option value="Telefone">Telefone</option>
+              <option value="E-mail">E-mail</option>
+              <option value="Chave Aleatoria">Chave Aleatoria</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row cols-1">
+          <div class="form-group">
+            <label>Chave PIX</label>
+            <input type="text" id="pix-key-input" placeholder="Ex: 11999999999" />
+          </div>
+        </div>
+        <div class="form-row cols-1">
+          <div class="form-group">
+            <label>Nome do Beneficiario</label>
+            <input type="text" id="pix-name" placeholder="Nome que aparece no PIX" />
+          </div>
+        </div>
+        <button class="btn-save" onclick="savePix()">Salvar Configuracao PIX</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script src="admin.js"></script>
+</body>
+</html>
